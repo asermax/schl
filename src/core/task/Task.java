@@ -40,7 +40,7 @@ public class Task implements Comparable<Task> {
     }
 
     public boolean isInTime( Hour hour ) {
-        return this.initHour.compareTo( hour ) <= 0
+        return this.initHour.compareTo( hour ) < 0
                && this.endHour.compareTo( hour ) > 0;
     }
 
