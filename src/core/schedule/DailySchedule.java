@@ -4,8 +4,8 @@
  */
 package core.schedule;
 
-import core.utils.Hour;
 import core.task.Task;
+import core.utils.Hour;
 import java.util.TreeSet;
 
 /**
