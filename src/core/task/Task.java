@@ -71,22 +71,35 @@ public class Task implements Comparable<Task> {
      * periodo durante el cual transcurrirá la tarea.;
      * {@code false} en caso contrario.
      */
-    public boolean isInTime( Hour hour ) {
+    public boolean isTranscurringAt( Hour hour ) {
         return this.initHour.compareTo( hour ) < 0
                && this.endHour.compareTo( hour ) > 0;
     }
 
     /**
-     * Inidica si elhorario indicado por parámetro esta dispuesto "luego" de
+     * Inidica si el horario indicado por parámetro esta dispuesto "luego" de
      * finalizada la tarea.
      * @param hour horario el cual se desea saber si esta dispuesto "luego" de 
      * finalizada la tarea.
-     * @return {@code true} si el horario esta dispuesto luego de finalizada
+     * @return {@code true} si el horario esta dispuesto "luego" de finalizada
+     * la tarea.;
+     * {@code false} en caso contrario.
+     */
+    public boolean isBefore( Hour hour ) {
+        return this.endHour.compareTo( hour ) <= 0;
+    }
+
+    /**
+     * Inidica si elhorario indicado por parámetro esta dispuesto "antes" de
+     * iniciada la tarea.
+     * @param hour horario el cual se desea saber si esta dispuesto "antes" de 
+     * iniciada la tarea.
+     * @return {@code true} si el horario esta dispuesto "antes" de iniciada
      * la tarea.;
      * {@code false} en caso contrario.
      */
     public boolean isAfter( Hour hour ) {
-        return this.endHour.compareTo( hour ) <= 0;
+        return this.initHour.compareTo( hour ) >= 0;
     }
 
     /**
