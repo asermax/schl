@@ -35,6 +35,8 @@ public class DailyScheduleTest {
                 createTask( new Hour( 16 ), new Hour( 17 ), "Prueba3" ) );
         assert ( instance.
                 createTask( new Hour( 11 ), new Hour( 15 ), "Prueba4" ) );
+        assert ( !instance.
+                createTask( new Hour( 10 ), new Hour( 15, 15 ), "Prueba5" ) );
 
     }
 
@@ -72,17 +74,18 @@ public class DailyScheduleTest {
         assertEquals( expResult, result );
     }
 
-    /**
-     * Test of existTaskAtTime method, of class DailySchedule.
-     */
     @Test
-    public void testExistTaskAtTime() {
-        System.out.println( "existTaskAtTime" );
-        Hour time = new Hour( 18 );
+    public void testToString() {
+        System.out.println( "toString" );
+
         DailySchedule instance = new DailySchedule();
-        boolean expResult = false;
-        boolean result = instance.existTaskAtTime( time );
-        assertEquals( expResult, result );
+        instance.createTask( new Hour( 15 ), new Hour( 16 ), "Prueba1" );
+        instance.createTask( new Hour( 15, 30 ), new Hour( 17 ), "Prueba2" );
+        instance.createTask( new Hour( 16 ), new Hour( 17 ), "Prueba3" );
+        instance.createTask( new Hour( 11 ), new Hour( 15 ), "Prueba4" );
+
+        System.out.println( instance );
+
     }
 
 }
