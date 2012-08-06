@@ -55,6 +55,15 @@ public class Task implements Comparable<Task> {
     }
 
     /**
+     * Devuelve la duración de esta tarea en cantidad de minutos.
+     * @return duración de la tarea en minutos.
+     */
+    public int getDurationInMinutes() {
+        return this.endHour.getHourInMinutes() - this.initHour.
+                getHourInMinutes();
+    }
+
+    /**
      * {@inheritDoc} 
      */
     @Override
