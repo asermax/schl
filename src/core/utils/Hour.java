@@ -9,11 +9,11 @@ package core.utils;
 public final class Hour implements Comparable<Hour> {
 
     /** Cantidad de horas en un día. */
-    private static final int HOURS = 24;
+    public static final int HOURS = 24;
     /** Cantidad de minutos en una hora. */
-    private static final int MINS = 60;
+    public static final int MINS = 60;
     /** Hora definida para este horario. */
-    private int hour;
+    private int hours;
     /** Cantidad de minutos pasada la hora, definido para este horario. */
     private int minutes;
 
@@ -28,7 +28,7 @@ public final class Hour implements Comparable<Hour> {
      * @param hour hora del horario.
      */
     public Hour( int hour ) {
-        this.setHour( hour );
+        this.setHours( hour );
     }
 
     /**
@@ -37,7 +37,7 @@ public final class Hour implements Comparable<Hour> {
      * @param minutes cantidad de minutos pasado de la hora.
      */
     public Hour( int hour, int minutes ) {
-        this.setHour( hour );
+        this.setHours( hour );
         this.setMinutes( minutes );
     }
 
@@ -45,8 +45,8 @@ public final class Hour implements Comparable<Hour> {
      * Devuelve la hora de este horario.
      * @return hora del horario.
      */
-    public int getHour() {
-        return hour;
+    public int getHours() {
+        return hours;
     }
 
     /**
@@ -55,12 +55,12 @@ public final class Hour implements Comparable<Hour> {
      * @throws IllegalArgumentException si el horario esta fuera del rango 
      * válido de horas (entre 0 y 23).
      */
-    public void setHour( int hour ) {
+    public void setHours( int hour ) {
         if ( hour < 0 || hour >= Hour.HOURS )
             throw new IllegalArgumentException(
                     "La hora debe ser un valor entre 0 y 23." );
 
-        this.hour = hour;
+        this.hours = hour;
     }
 
     /**
@@ -84,11 +84,43 @@ public final class Hour implements Comparable<Hour> {
     }
 
     /**
+     * Devuelve el horario en cantidad de minutos desde las 00:00
+     * @return cantidad de minutos desde las 00:00
+     */
+    public int getHourInMinutes() {
+        return this.hours * 60 + this.minutes;
+    }
+
+    /**
+     * Suma una cantidad de minutos al horario.
+     * @param minutes cantidad de minutos a agregar.
+     */
+    public void addMins( int minutes ) {
+        this.minutes += minutes;
+
+        while ( this.minutes >= Hour.MINS ) {
+            this.addHours( 1 );
+            this.minutes -= Hour.MINS;
+        }
+    }
+
+    /**
+     * Suma una cantidad de horas al horario.
+     * @param hours cantidad de horas a agregar.
+     */
+    public void addHours( int hours ) {
+        this.hours += hours;
+
+        while ( this.hours >= Hour.HOURS )
+            this.hours -= Hour.HOURS;
+    }
+
+    /**
      * {@inheritDoc} 
      */
     @Override
     public int compareTo( Hour hour ) {
-        int res = this.hour - hour.hour;
+        int res = this.hours - hour.hours;
 
         if ( res == 0 )
             res = this.minutes - hour.minutes;
@@ -102,7 +134,7 @@ public final class Hour implements Comparable<Hour> {
      */
     @Override
     public String toString() {
-        return String.format( "%02d:%02d", this.hour, this.minutes );
+        return String.format( "%02d:%02d", this.hours, this.minutes );
     }
 
 }
