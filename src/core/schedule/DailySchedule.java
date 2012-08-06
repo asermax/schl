@@ -2,6 +2,7 @@ package core.schedule;
 
 import core.task.Task;
 import core.utils.Hour;
+import java.util.Iterator;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -12,7 +13,7 @@ import java.util.TreeSet;
  * @author kiira
  * @version 1.0
  */
-public class DailySchedule {
+public class DailySchedule implements Iterable<Task> {
 
     /** Estructura de datos que mantiene las {@code Task}s scheduleadas. */
     private SortedSet<Task> tasks;
@@ -111,6 +112,14 @@ public class DailySchedule {
                 break;
 
         return finded;
+    }
+
+    /**
+     * {@inheritDoc} 
+     */
+    @Override
+    public Iterator<Task> iterator() {
+        return this.tasks.iterator();
     }
 
     /**
