@@ -7,6 +7,7 @@ package core.schedule.ui;
 import core.task.Task;
 import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.BorderFactory;
 
 /**
  *
@@ -21,9 +22,12 @@ public class TaskPanel extends javax.swing.JPanel {
         initComponents();
         this.task = task;
 
-        int height = task.getDurationInMinutes() * hoursHeight / timeFraction;
+        int height = Math.round(
+                (float)task.getDurationInMinutes() * hoursHeight / timeFraction );
         this.setPreferredSize( new Dimension( this.getPreferredSize().width,
                                               height ) );
+        this.setBorder( BorderFactory.
+                createMatteBorder( 0, 0, 1, 0, Color.black ) );
         this.setBackground( color );
 
         this.jLDescription.setText( task.getDescription() );
@@ -37,6 +41,8 @@ public class TaskPanel extends javax.swing.JPanel {
         initComponents();
         this.setPreferredSize( new Dimension( this.getPreferredSize().width,
                                               height ) );
+        this.setBorder( BorderFactory.
+                createMatteBorder( 0, 0, 1, 0, Color.black ) );
     }
 
     public TaskPanel() {

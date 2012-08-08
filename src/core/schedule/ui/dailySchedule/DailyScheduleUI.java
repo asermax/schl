@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package core.schedule.ui.dailySchedule;
 
 import core.schedule.DailySchedule;
@@ -68,16 +64,17 @@ public class DailyScheduleUI extends javax.swing.JPanel {
     private void initTasksPanel() {
         Iterator<Task> iter = schedule.iterator();
         Task current;
-        int diff, last = 0, height;
+        int diff, last = 0;
 
         while ( iter.hasNext() ) {
             //obtenemos la siguiente task
             current = iter.next();
 
-            //creamos un task panel vacio por el espacio sobrane
+            //creamos un task panel vacio por cada fracción de tiempo en el
+            //espacio restante
             diff = current.getInitHour().getHourInMinutes() - last;
-            height = diff * this.hoursHeight / this.timeFraction;
-            this.jPTasks.add( new TaskPanel( height ) );
+
+            this.fillSpace( diff, last );
 
             //creamos el panel para la task actual
             this.jPTasks.add( new TaskPanel(
@@ -92,11 +89,41 @@ public class DailyScheduleUI extends javax.swing.JPanel {
 
         }
 
-        //agregamos un task panel para rellenar el resto de lugar
+        //agregamos tasks panels para rellenar el resto de lugar
         diff = Hour.HOURS * Hour.MINS - last;
-        height = diff * this.hoursHeight / this.timeFraction;
-        this.jPTasks.add( new TaskPanel( height ) );
 
+        this.fillSpace( diff, last );
+    }
+
+    private void fillSpace( int diff, int last ) {
+        int height, irregular;
+
+        //primero quitamos cualquier porción irregular al comienzo del espacio
+        irregular = this.timeFraction - last % this.timeFraction;
+        
+        if ( irregular > 0 && irregular < diff ) {
+            height = this.calculateHeight( irregular );
+
+            diff -= irregular;
+
+            this.jPTasks.add( new TaskPanel( height ) );
+        }
+
+        //continuamos agregando intervalos regulares para completar el espacio
+        while ( diff > 0 ) {
+            if ( diff > this.timeFraction )
+                height = this.hoursHeight;
+            else
+                height = this.calculateHeight( diff );
+
+            diff -= this.timeFraction;
+
+            this.jPTasks.add( new TaskPanel( height ) );
+        }
+    }
+
+    private int calculateHeight( int time ) {
+        return Math.round( (float)time * this.hoursHeight / this.timeFraction );
     }
 
     public static void main( String[] args ) {
@@ -108,6 +135,12 @@ public class DailyScheduleUI extends javax.swing.JPanel {
         instance.createTask( new Hour( 15, 30 ), new Hour( 17 ), "Prueba2" );
         instance.createTask( new Hour( 16 ), new Hour( 17 ), "Prueba3" );
         instance.createTask( new Hour( 11 ), new Hour( 15 ), "Prueba4" );
+        instance.createTask( new Hour( 17, 25 ), new Hour( 18, 3 ),
+                             "Intervalo irregular" );
+        instance.createTask( new Hour( 18, 11 ), new Hour( 19, 5 ),
+                             "Intervalo irregular" );
+        instance.createTask( new Hour( 21, 10 ), new Hour( 22, 7 ),
+                             "Intervalo irregular" );
 
         frame.setDefaultCloseOperation( javax.swing.JFrame.EXIT_ON_CLOSE );
         frame.setSize( 800, 600 );

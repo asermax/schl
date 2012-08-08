@@ -1,12 +1,11 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package core.schedule.ui;
 
 import core.utils.Hour;
+import java.awt.Color;
 import java.awt.Dimension;
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 
 /**
  *
@@ -22,16 +21,23 @@ public class HoursStrip extends javax.swing.JPanel {
         int repetitions = Hour.HOURS * Hour.MINS / timeFraction;
         Hour h = new Hour();
         JLabel label;
+        Border border = BorderFactory.
+                createMatteBorder( 0, 0, 1, 1, Color.black );
         Dimension dim;
 
         for ( int i = 0; i < repetitions; i++ ) {
-            //agregamos el label
-            label = new JLabel( h.toString() );
-            label.setVerticalAlignment( JLabel.CENTER );
-            
-            dim = new Dimension( label.getPreferredSize().width, hoursHeight);
+            //creamos el label y lo dimensionamos
+            label = new JLabel( String.format( "<html><br/>%s</html>", h.
+                    toString() ) );
+            label.setVerticalAlignment( JLabel.TOP );
+
+            dim = new Dimension( label.getPreferredSize().width + 10,
+                                 hoursHeight );
             label.setMaximumSize( dim );
             label.setPreferredSize( dim );
+
+            label.setBorder( border );
+
 
             this.jPMain.add( label );
 
