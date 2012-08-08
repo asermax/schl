@@ -25,6 +25,10 @@ public class Task implements Comparable<Task> {
      * @param description descripción de la tarea.
      */
     public Task( Hour initHour, Hour endHour, String description ) {
+        if ( initHour.isAfter( endHour ) )
+            throw new IllegalArgumentException(
+                    "La hora inicial debe ser menor de la hora final." );
+        
         this.initHour = initHour;
         this.endHour = endHour;
         this.description = description;
@@ -59,8 +63,7 @@ public class Task implements Comparable<Task> {
      * @return duración de la tarea en minutos.
      */
     public int getDurationInMinutes() {
-        return this.endHour.getHourInMinutes() - this.initHour.
-                getHourInMinutes();
+        return this.endHour.getHourInMinutes() - this.initHour.getHourInMinutes();
     }
 
     /**
@@ -82,7 +85,7 @@ public class Task implements Comparable<Task> {
      */
     public boolean isTranscurringAt( Hour hour ) {
         return this.initHour.compareTo( hour ) < 0
-               && this.endHour.compareTo( hour ) > 0;
+                && this.endHour.compareTo( hour ) > 0;
     }
 
     /**
@@ -95,7 +98,7 @@ public class Task implements Comparable<Task> {
      * {@code false} en caso contrario.
      */
     public boolean isBefore( Hour hour ) {
-        return this.endHour.compareTo( hour ) <= 0;
+        return this.endHour.isBefore( hour );
     }
 
     /**
@@ -108,7 +111,7 @@ public class Task implements Comparable<Task> {
      * {@code false} en caso contrario.
      */
     public boolean isAfter( Hour hour ) {
-        return this.initHour.compareTo( hour ) >= 0;
+        return this.initHour.isAfter( hour );
     }
 
     /**
@@ -119,8 +122,7 @@ public class Task implements Comparable<Task> {
     @Override
     public String toString() {
         return String.format( "Tarea: %s; Inicio: %s; Fin: %s",
-                              this.description, this.initHour,
-                              this.endHour );
+                this.description, this.initHour,
+                this.endHour );
     }
-
 }
