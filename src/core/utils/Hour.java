@@ -116,6 +116,30 @@ public final class Hour implements Comparable<Hour> {
     }
 
     /**
+     * Indica si este horario ocurre LUEGO (o al mismo tiempo) del horario 
+     * indicado.
+     * @param hour horario con el cual comparar.
+     * @return {@code true} si el horario actual ocurre LUEGO o en el mismo 
+     * instante que el horario indicado; {@code false} si el horario actual 
+     * ocurre ANTES del horario indicado
+     */
+    public boolean isAfter( Hour hour ) {
+        return this.compareTo( hour ) >= 0;
+    }
+    
+    /**
+     * Indica si este horario ocurre ANTES (o al mismo tiempo) del horario 
+     * indicado.
+     * @param hour horario con el cual comparar.
+     * @return {@code true} si el horario actual ocurre ANTES o en el mismo 
+     * instante que el horario indicado; {@code false} si el horario actual 
+     * ocurre LUEGO del horario indicado
+     */
+    public boolean isBefore( Hour hour ) {
+        return this.compareTo( hour ) <= 0;
+    }
+    
+    /**
      * {@inheritDoc} 
      */
     @Override
@@ -136,5 +160,5 @@ public final class Hour implements Comparable<Hour> {
     public String toString() {
         return String.format( "%02d:%02d", this.hours, this.minutes );
     }
-
+    
 }
