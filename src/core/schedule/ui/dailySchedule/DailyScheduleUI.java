@@ -85,8 +85,7 @@ public class DailyScheduleUI extends javax.swing.JPanel {
 
             //seteamos last para la próxima ronda
             last = current.
-                    getEndHour().getHourInMinutes();
-
+                    getEndHour().getHourInMinutes(); 
         }
 
         //agregamos tasks panels para rellenar el resto de lugar
