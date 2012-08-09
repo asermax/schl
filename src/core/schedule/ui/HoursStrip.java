@@ -85,7 +85,7 @@ public class HoursStrip extends javax.swing.JPanel {
                                  size );
 
             //asignamos los valores generados
-            label.setHorizontalAlignment( JLabel.TOP );
+            label.setVerticalAlignment( JLabel.TOP );
             label.setMaximumSize( dim );
             label.setPreferredSize( dim );
 
