@@ -1,5 +1,7 @@
 package core.task;
 
+import core.events.EventDispatcher;
+import core.events.task.TaskDeleteEvent;
 import core.utils.Hour;
 
 /**
@@ -63,7 +65,8 @@ public class Task implements Comparable<Task> {
      * @return duración de la tarea en minutos.
      */
     public int getDurationInMinutes() {
-        return this.endHour.getHourInMinutes() - this.initHour.getHourInMinutes();
+        return this.endHour.getHourInMinutes() - this.initHour.
+                getHourInMinutes();
     }
 
     /**
@@ -85,7 +88,7 @@ public class Task implements Comparable<Task> {
      */
     public boolean isTranscurringAt( Hour hour ) {
         return this.initHour.compareTo( hour ) < 0
-                && this.endHour.compareTo( hour ) > 0;
+               && this.endHour.compareTo( hour ) > 0;
     }
 
     /**
@@ -113,6 +116,11 @@ public class Task implements Comparable<Task> {
     public boolean isAfter( Hour hour ) {
         return this.initHour.isAfter( hour );
     }
+    
+    public void delete() {
+        EventDispatcher.getInstance().fireTaskEvent( 
+                new TaskDeleteEvent( this, "Eliminando Task" ) );
+    }
 
     /**
      * Devuelve la representación de esta tarea en forma de {@code String}, 
@@ -122,7 +130,8 @@ public class Task implements Comparable<Task> {
     @Override
     public String toString() {
         return String.format( "Tarea: %s; Inicio: %s; Fin: %s",
-                this.description, this.initHour,
-                this.endHour );
+                              this.description, this.initHour,
+                              this.endHour );
     }
+
 }
