@@ -13,7 +13,7 @@ import java.util.TreeSet;
  * @author kiira
  * @version 1.0
  */
-public class DailySchedule implements Iterable<Task> {
+public class DailySchedule extends Schedule {
 
     /** Estructura de datos que mantiene las {@code Task}s scheduleadas. */
     private SortedSet<Task> tasks;
@@ -41,18 +41,28 @@ public class DailySchedule implements Iterable<Task> {
     }
 
     /**
-     * Permite agregar una tarea al schedule.
-     * @param task tarea a agregar.
-     * @return {@code true} si la tarea se pudo asignar correctamente (si el 
-     * período indicado por la tarea no esta ocupado); 
-     * {@code false} si la tarea no se pudo asignar correctamente.
+     * {@inheritDoc}
      */
+    @Override
     public boolean addTask( Task task ) {
         boolean res = this.isPeriodAvailable( task.getInitHour(),
                                               task.getEndHour() );
 
         if ( res )
             this.tasks.add( task );
+
+        return res;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean removeTask( Task task ) {
+        boolean res = this.tasks.remove( task );
+
+        if ( res )
+            task.delete();
 
         return res;
     }
