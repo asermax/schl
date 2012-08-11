@@ -12,22 +12,31 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Paint;
 import java.awt.Point;
+import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 
 /**
  *
  * @author kiira
  */
-public class TaskPanel extends javax.swing.JPanel {
+public class TaskPanel extends javax.swing.JPanel implements ActionListener {
 
     private Color baseColor;
     private Task task;
+    private ScheduleUI scheduleUI;
 
     /** Creates new form TaskPanel */
-    public TaskPanel( Task task, int hoursHeight, int timeFraction, Color color ) {
+    public TaskPanel( ScheduleUI ui, Task task, int hoursHeight,
+                      int timeFraction, Color color ) {
         initComponents();
+        this.scheduleUI = ui;
         this.task = task;
         this.baseColor = color;
+
+        //seteamos el popup
+        this.setComponentPopupMenu( jPMTask );
 
         //calculamos y seteamos la altura de acuerdo a los parámetros
         int height = Math.
@@ -53,20 +62,20 @@ public class TaskPanel extends javax.swing.JPanel {
                 getEndHour() ) );
     }
 
-    public TaskPanel( Task task, int timeFraction, int hoursHeight ) {
-        this( task, hoursHeight, timeFraction, new Color( 254, 79, 79 ) );
+    public TaskPanel( ScheduleUI ui, Task task, int timeFraction,
+                      int hoursHeight ) {
+        this( ui, task, hoursHeight, timeFraction, new Color( 254, 79, 79 ) );
     }
 
-    public TaskPanel( int height ) {
+    public TaskPanel( int time, int timeFraction, int hoursHeight ) {
         initComponents();
-        this.setPreferredSize( new Dimension( this.getPreferredSize().width,
-                                              height ) );
+
+        this.setPreferredSize(
+                new Dimension(
+                this.getPreferredSize().width,
+                Math.round( (float)time * hoursHeight / timeFraction ) ) );
         this.setBorder( BorderFactory.
                 createMatteBorder( 0, 0, 1, 0, Color.black ) );
-    }
-
-    public TaskPanel() {
-        this( 100 );
     }
 
     /** This method is called from within the constructor to
@@ -78,16 +87,46 @@ public class TaskPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPMTask = new javax.swing.JPopupMenu();
+        jMIEliminar = new javax.swing.JMenuItem();
         jLDescription = new javax.swing.JLabel();
+
+        jPMTask.setName("jPMTask"); // NOI18N
+
+        jMIEliminar.setText("Eliminar");
+        jMIEliminar.setName("jMIEliminar"); // NOI18N
+        jMIEliminar.addActionListener(this);
+        jPMTask.add(jMIEliminar);
 
         setLayout(new java.awt.BorderLayout());
 
         jLDescription.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLDescription.setName("jLDescription"); // NOI18N
         add(jLDescription, java.awt.BorderLayout.CENTER);
+    }
+
+    // Code for dispatching events from components to event handlers.
+
+    public void actionPerformed(java.awt.event.ActionEvent evt) {
+        if (evt.getSource() == jMIEliminar) {
+            TaskPanel.this.jMIEliminarActionPerformed(evt);
+        }
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jMIEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIEliminarActionPerformed
+        if ( JOptionPane.showConfirmDialog( (JComponent)scheduleUI,
+                                            "¿Desea eliminar la Task?",
+                                            "Eliminar Task",
+                                            JOptionPane.YES_NO_OPTION,
+                                            JOptionPane.QUESTION_MESSAGE )
+             == JOptionPane.YES_OPTION )
+            this.scheduleUI.removeTask( this.task );
+    }//GEN-LAST:event_jMIEliminarActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLDescription;
+    private javax.swing.JMenuItem jMIEliminar;
+    private javax.swing.JPopupMenu jPMTask;
     // End of variables declaration//GEN-END:variables
 
     @Override
