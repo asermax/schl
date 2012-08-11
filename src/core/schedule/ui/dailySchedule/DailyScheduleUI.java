@@ -1,6 +1,7 @@
 package core.schedule.ui.dailySchedule;
 
 import core.schedule.DailySchedule;
+import core.schedule.ui.ScheduleUI;
 import core.schedule.ui.TaskPanel;
 import core.task.Task;
 import core.utils.Hour;
@@ -10,7 +11,7 @@ import java.util.Iterator;
  *
  * @author kiira
  */
-public class DailyScheduleUI extends javax.swing.JPanel {
+public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
 
     private int hoursHeight;
     private int timeFraction;
@@ -77,15 +78,16 @@ public class DailyScheduleUI extends javax.swing.JPanel {
             this.fillSpace( diff, last );
 
             //creamos el panel para la task actual
-            this.jPTasks.add( new TaskPanel(
-                    current,
-                    this.hoursHeight, this.timeFraction,
-                    new java.awt.Color( new java.util.Random().
-                    nextInt() ) ) );
+            this.jPTasks.add(
+                    new TaskPanel( this, current,
+                                   this.hoursHeight,
+                                   this.timeFraction,
+                                   new java.awt.Color(
+                    new java.util.Random().nextInt() ) ) );
 
             //seteamos last para la próxima ronda
             last = current.
-                    getEndHour().getHourInMinutes(); 
+                    getEndHour().getHourInMinutes();
         }
 
         //agregamos tasks panels para rellenar el resto de lugar
@@ -95,34 +97,30 @@ public class DailyScheduleUI extends javax.swing.JPanel {
     }
 
     private void fillSpace( int diff, int last ) {
-        int height, irregular;
+        int time, irregular;
 
         //primero quitamos cualquier porción irregular al comienzo del espacio
         irregular = this.timeFraction - last % this.timeFraction;
-        
-        if ( irregular > 0 && irregular < diff ) {
-            height = this.calculateHeight( irregular );
 
+        if ( irregular > 0 && irregular < diff ) {
             diff -= irregular;
 
-            this.jPTasks.add( new TaskPanel( height ) );
+            this.jPTasks.add( new TaskPanel( irregular, this.timeFraction,
+                                             this.hoursHeight ) );
         }
 
         //continuamos agregando intervalos regulares para completar el espacio
         while ( diff > 0 ) {
             if ( diff > this.timeFraction )
-                height = this.hoursHeight;
+                time = this.timeFraction;
             else
-                height = this.calculateHeight( diff );
+                time = diff;
 
             diff -= this.timeFraction;
 
-            this.jPTasks.add( new TaskPanel( height ) );
+            this.jPTasks.add( new TaskPanel( time, this.timeFraction,
+                                             this.hoursHeight ) );
         }
-    }
-
-    private int calculateHeight( int time ) {
-        return Math.round( (float)time * this.hoursHeight / this.timeFraction );
     }
 
     public static void main( String[] args ) {
@@ -147,6 +145,15 @@ public class DailyScheduleUI extends javax.swing.JPanel {
 
         frame.setVisible( true );
     }
+
+    @Override
+    public void removeTask( Task task ) {
+        this.schedule.removeTask( task );
+        this.jPTasks.removeAll();
+        this.initTasksPanel();
+        this.revalidate();
+    }
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private core.schedule.ui.HoursStrip hSLateral;
     private javax.swing.JPanel jPMain;
