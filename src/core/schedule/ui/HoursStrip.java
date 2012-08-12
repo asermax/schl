@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 
 /**
@@ -19,25 +20,27 @@ public class HoursStrip extends javax.swing.JPanel {
 
     /** Creates new form HoursStrip */
     public HoursStrip( int size, int timeFraction, int direction ) {
-        if ( direction != BoxLayout.X_AXIS && direction != BoxLayout.Y_AXIS )
+        if ( direction != SwingConstants.HORIZONTAL
+             && direction != SwingConstants.VERTICAL )
             throw new IllegalArgumentException(
-                    "Solo se puede especificar Y_AXIS o X_AXIS como dirección." );
+                    "Solo se puede especificar HORIZONTAL o VERTICAL"
+                    + " como dirección." );
 
         initComponents();
 
         //dependiendo de la dirección, generamos el strip
-        if ( direction == BoxLayout.X_AXIS )
+        if ( direction == SwingConstants.HORIZONTAL )
             this.initializeHorizontalStrip( size, timeFraction );
         else
             this.initializeVerticalStrip( size, timeFraction );
     }
 
     public HoursStrip( int size, int timeFraction ) {
-        this( size, timeFraction, BoxLayout.Y_AXIS );
+        this( size, timeFraction, SwingConstants.VERTICAL );
     }
 
     public HoursStrip( int size ) {
-        this( size, HoursStrip.DEFAULT_TIME_FRACTION, BoxLayout.Y_AXIS );
+        this( size, HoursStrip.DEFAULT_TIME_FRACTION );
     }
 
     public HoursStrip() {

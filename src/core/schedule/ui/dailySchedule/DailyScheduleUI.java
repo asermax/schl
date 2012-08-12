@@ -1,11 +1,17 @@
 package core.schedule.ui.dailySchedule;
 
 import core.schedule.DailySchedule;
+import core.schedule.task.Task;
 import core.schedule.ui.ScheduleUI;
 import core.schedule.ui.TaskPanel;
-import core.schedule.task.Task;
 import core.utils.Hour;
-import java.util.Iterator;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import javax.swing.BoxLayout;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -13,20 +19,43 @@ import java.util.Iterator;
  */
 public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
 
-    private int hoursHeight;
+    private int hoursSize;
     private int timeFraction;
     private DailySchedule schedule;
+    private int direction;
+    private Map<Task, Color> colors;
 
     /** Creates new form DailyScheduleUI */
-    public DailyScheduleUI( DailySchedule schedule ) {
+    public DailyScheduleUI( DailySchedule schedule, int direction ) {
         this.schedule = schedule;
-        this.hoursHeight = 100;
+        this.direction = direction;
+        this.hoursSize = 100;
         this.timeFraction = 60;
+
         initComponents();
+
+        //cambios dependiendo de la dirección
+        if ( this.direction == SwingConstants.HORIZONTAL ) {
+            this.jPMain.remove( this.hSLateral );
+            this.jPMain.add( this.hSLateral, BorderLayout.NORTH );
+
+            this.jPTasks.setLayout( new BoxLayout( jPTasks, BoxLayout.X_AXIS ) );
+        } else
+            this.jPTasks.setLayout( new BoxLayout( jPTasks, BoxLayout.Y_AXIS ) );
+
+        //inicializamos la lista de colores
+        this.colors = new HashMap<Task, Color>( schedule.size() );
+        Random ranGen = new Random();
+
+        for ( Task task : schedule )
+            this.colors.put( task, new java.awt.Color( ranGen.nextInt() ) );
 
         //generamos los task panels
         initTasksPanel();
+    }
 
+    public DailyScheduleUI( DailySchedule schedule ) {
+        this( schedule, SwingConstants.VERTICAL );
     }
 
     /** This method is called from within the constructor to
@@ -41,7 +70,8 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
         jSPMain = new javax.swing.JScrollPane();
         jPMain = new javax.swing.JPanel();
         jPTasks = new javax.swing.JPanel();
-        hSLateral = new core.schedule.ui.HoursStrip( this.hoursHeight, this.timeFraction );
+        hSLateral = new core.schedule.ui.HoursStrip( this.hoursSize, this.timeFraction,
+            this.direction );
 
         setLayout(new java.awt.BorderLayout());
 
@@ -51,7 +81,7 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
         jPMain.setLayout(new java.awt.BorderLayout());
 
         jPTasks.setName("jPTasks"); // NOI18N
-        jPTasks.setLayout(new javax.swing.BoxLayout(jPTasks, javax.swing.BoxLayout.Y_AXIS));
+        jPTasks.setLayout(null);
         jPMain.add(jPTasks, java.awt.BorderLayout.CENTER);
 
         hSLateral.setName("hSLateral"); // NOI18N
@@ -63,14 +93,9 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initTasksPanel() {
-        Iterator<Task> iter = schedule.iterator();
-        Task current;
         int diff, last = 0;
 
-        while ( iter.hasNext() ) {
-            //obtenemos la siguiente task
-            current = iter.next();
-
+        for ( Task current : schedule ) {
             //creamos un task panel vacio por cada fracción de tiempo en el
             //espacio restante
             diff = current.getInitHour().getHourInMinutes() - last;
@@ -78,12 +103,12 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
             this.fillSpace( diff, last );
 
             //creamos el panel para la task actual
-            this.jPTasks.add(
-                    new TaskPanel( this, current,
-                                   this.hoursHeight,
+            this.jPTasks.
+                    add(
+                    new TaskPanel( this, current, this.hoursSize,
                                    this.timeFraction,
-                                   new java.awt.Color(
-                    new java.util.Random().nextInt() ) ) );
+                                   this.colors.get( current ),
+                                   this.direction ) );
 
             //seteamos last para la próxima ronda
             last = current.
@@ -105,8 +130,9 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
         if ( irregular > 0 && irregular < diff ) {
             diff -= irregular;
 
-            this.jPTasks.add( new TaskPanel( irregular, this.timeFraction,
-                                             this.hoursHeight ) );
+            this.jPTasks.add( new TaskPanel( irregular, this.hoursSize,
+                                             this.timeFraction,
+                                             this.direction ) );
         }
 
         //continuamos agregando intervalos regulares para completar el espacio
@@ -118,8 +144,9 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
 
             diff -= this.timeFraction;
 
-            this.jPTasks.add( new TaskPanel( time, this.timeFraction,
-                                             this.hoursHeight ) );
+            this.jPTasks.add( new TaskPanel( time, this.hoursSize,
+                                             this.timeFraction,
+                                             this.direction ) );
         }
     }
 
@@ -149,6 +176,7 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
     @Override
     public void removeTask( Task task ) {
         this.schedule.removeTask( task );
+        this.colors.remove( task );
         this.jPTasks.removeAll();
         this.initTasksPanel();
         this.revalidate();

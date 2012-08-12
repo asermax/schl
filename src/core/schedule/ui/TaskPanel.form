@@ -38,11 +38,19 @@
 
   <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout"/>
   <SubComponents>
-    <Component class="javax.swing.JLabel" name="jLDescription">
+    <Component class="sas.swing.MultiLineLabel" name="jLDescription">
       <Properties>
-        <Property name="horizontalAlignment" type="int" value="0"/>
+        <Property name="horizontalTextAlignment" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="MultiLineLabel.CENTER" type="code"/>
+        </Property>
         <Property name="name" type="java.lang.String" value="jLDescription" noResource="true"/>
+        <Property name="verticalTextAlignment" type="int" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
+          <Connection code="MultiLineLabel.CENTER" type="code"/>
+        </Property>
       </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_InitCodePre" type="java.lang.String" value="jLDescription.setUI( MultiLineShadowUI.labelUI );"/>
+      </AuxValues>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout" value="org.netbeans.modules.form.compat2.layouts.DesignBorderLayout$BorderConstraintsDescription">
           <BorderConstraints direction="Center"/>
@@ -51,4 +59,3 @@
     </Component>
   </SubComponents>
 </Form>
-
