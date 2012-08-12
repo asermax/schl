@@ -26,5 +26,11 @@ public abstract class Schedule implements Iterable<Task> {
      * {@code false} si la tarea no se eliminó correctamente.
      */
     public abstract boolean removeTask( Task task );
+    
+    /**
+     * Devuelve la cantidad de tasks establecidas en este schedule.
+     * @return cantidad de tasks del schedule.
+     */
+    public abstract int size();
 
 }

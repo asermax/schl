@@ -133,6 +133,14 @@ public class DailySchedule extends Schedule {
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int size() {
+        return this.tasks.size();
+    }
+    
+    /**
      * Representa este schedule en forma de una lista simple y ordenada de las
      * tareas scheduleadas, en orden temporal.
      * @return representación en forma de {@code String} de este schedule.
