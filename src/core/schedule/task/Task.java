@@ -1,4 +1,4 @@
-package core.task;
+package core.schedule.task;
 
 import core.events.EventDispatcher;
 import core.events.task.TaskDeleteEvent;

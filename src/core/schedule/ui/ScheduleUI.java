@@ -1,6 +1,6 @@
 package core.schedule.ui;
 
-import core.task.Task;
+import core.schedule.task.Task;
 
 /**
  * La interfaz {@code ScheduleUI}

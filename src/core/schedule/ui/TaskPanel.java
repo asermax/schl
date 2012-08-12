@@ -4,7 +4,7 @@
  */
 package core.schedule.ui;
 
-import core.task.Task;
+import core.schedule.task.Task;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;

@@ -3,7 +3,7 @@ package core.schedule.ui.dailySchedule;
 import core.schedule.DailySchedule;
 import core.schedule.ui.ScheduleUI;
 import core.schedule.ui.TaskPanel;
-import core.task.Task;
+import core.schedule.task.Task;
 import core.utils.Hour;
 import java.util.Iterator;
 

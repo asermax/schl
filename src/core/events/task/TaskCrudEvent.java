@@ -1,6 +1,6 @@
 package core.events.task;
 
-import core.task.Task;
+import core.schedule.task.Task;
 
 /**
  * La clase {@code TaskCrudEvent}

@@ -1,6 +1,6 @@
 package core.schedule;
 
-import core.task.Task;
+import core.schedule.task.Task;
 import core.utils.Hour;
 import java.util.Iterator;
 import java.util.SortedSet;

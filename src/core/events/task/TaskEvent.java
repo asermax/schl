@@ -1,7 +1,7 @@
 package core.events.task;
 
 import core.events.Event;
-import core.task.Task;
+import core.schedule.task.Task;
 
 /**
  * La clase {@code TaskEvent}

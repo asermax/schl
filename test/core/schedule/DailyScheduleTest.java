@@ -4,7 +4,7 @@
  */
 package core.schedule;
 
-import core.task.Task;
+import core.schedule.task.Task;
 import core.utils.Hour;
 import static org.junit.Assert.*;
 import org.junit.Test;
