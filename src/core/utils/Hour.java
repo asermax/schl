@@ -42,6 +42,15 @@ public final class Hour implements Comparable<Hour> {
     }
 
     /**
+     * Inicializa el horario a partir de los datos de otro {@code Hour}
+     * @param hour horario del cual se obtendran los datos de inicialización.
+     */
+    public Hour( Hour hour ) {
+        this.hours = hour.getHours();
+        this.minutes = hour.getMinutes();
+    }
+
+    /**
      * Devuelve la hora de este horario.
      * @return hora del horario.
      */
@@ -56,9 +65,9 @@ public final class Hour implements Comparable<Hour> {
      * válido de horas (entre 0 y 23).
      */
     public void setHours( int hour ) {
-        if ( hour < 0 || hour >= Hour.HOURS )
+        if ( hour < 0 || hour > Hour.HOURS )
             throw new IllegalArgumentException(
-                    "La hora debe ser un valor entre 0 y 23." );
+                    "La hora debe ser un valor entre 0 y 24." );
 
         this.hours = hour;
     }
@@ -80,14 +89,17 @@ public final class Hour implements Comparable<Hour> {
             throw new IllegalArgumentException(
                     "Los minutos deben ser un valor entre 0 y 59." );
 
-        this.minutes = minutes;
+        if ( this.hours == Hour.HOURS )
+            this.minutes = 0;
+        else
+            this.minutes = minutes;
     }
 
     /**
      * Devuelve el horario en cantidad de minutos desde las 00:00
      * @return cantidad de minutos desde las 00:00
      */
-    public int getHourInMinutes() {
+    public int toMinutes() {
         return this.hours * 60 + this.minutes;
     }
 
@@ -99,8 +111,13 @@ public final class Hour implements Comparable<Hour> {
         this.minutes += minutes;
 
         while ( this.minutes >= Hour.MINS ) {
-            this.addHours( 1 );
             this.minutes -= Hour.MINS;
+            this.addHours( 1 );
+        }
+
+        while ( this.minutes < 0 ) {
+            this.minutes += Hour.MINS;
+            this.addHours( -1 );
         }
     }
 
@@ -111,8 +128,13 @@ public final class Hour implements Comparable<Hour> {
     public void addHours( int hours ) {
         this.hours += hours;
 
-        while ( this.hours >= Hour.HOURS )
-            this.hours -= Hour.HOURS;
+        if ( this.hours >= Hour.HOURS ) {
+            this.hours = Hour.HOURS;
+            this.minutes = 0;
+        } else if ( this.hours < 0 ) {
+            this.hours = 0;
+            this.minutes = 0;
+        }
     }
 
     /**
@@ -126,7 +148,7 @@ public final class Hour implements Comparable<Hour> {
     public boolean isAfter( Hour hour ) {
         return this.compareTo( hour ) >= 0;
     }
-    
+
     /**
      * Indica si este horario ocurre ANTES (o al mismo tiempo) del horario 
      * indicado.
@@ -138,7 +160,7 @@ public final class Hour implements Comparable<Hour> {
     public boolean isBefore( Hour hour ) {
         return this.compareTo( hour ) <= 0;
     }
-    
+
     /**
      * {@inheritDoc} 
      */
@@ -160,5 +182,5 @@ public final class Hour implements Comparable<Hour> {
     public String toString() {
         return String.format( "%02d:%02d", this.hours, this.minutes );
     }
-    
+
 }
