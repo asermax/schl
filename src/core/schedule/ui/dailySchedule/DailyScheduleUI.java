@@ -93,14 +93,14 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initTasksPanel() {
-        int diff, last = 0;
+        Hour init = new Hour(), end;
 
         for ( Task current : schedule ) {
             //creamos un task panel vacio por cada fracción de tiempo en el
             //espacio restante
-            diff = current.getInitHour().getHourInMinutes() - last;
+            end = current.getInitHour();
 
-            this.fillSpace( diff, last );
+            this.fillSpace( init, end );
 
             //creamos el panel para la task actual
             this.jPTasks.
@@ -111,50 +111,64 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
                                    this.direction ) );
 
             //seteamos last para la próxima ronda
-            last = current.
-                    getEndHour().getHourInMinutes();
+            init = current.getEndHour();
         }
 
-        //agregamos tasks panels para rellenar el resto de lugar
-        diff = Hour.HOURS * Hour.MINS - last;
-
-        this.fillSpace( diff, last );
+        //agregamos tasks panels para rellenar el resto de lugar        
+        this.fillSpace( init, new Hour( 24 ) );
     }
 
-    private void fillSpace( int diff, int last ) {
-        int time, irregular;
+    private void fillSpace( Hour init, Hour end ) {
+        int irregular;
+        Hour current = new Hour( init );
 
         //primero quitamos cualquier porción irregular al comienzo del espacio
-        irregular = this.timeFraction - last % this.timeFraction;
+        irregular = this.timeFraction - init.toMinutes() % this.timeFraction;
 
-        if ( irregular > 0 && irregular < diff ) {
-            diff -= irregular;
+        if ( irregular > 0 && irregular < this.timeFraction
+             && irregular < end.toMinutes() - init.toMinutes() ) {
+            current.addMins( irregular );
 
-            this.jPTasks.add( new TaskPanel( irregular, this.hoursSize,
+            this.jPTasks.add( new TaskPanel( this, init,
+                                             current,
+                                             this.hoursSize,
                                              this.timeFraction,
                                              this.direction ) );
+
+            init.addMins( irregular );
+
         }
 
         //continuamos agregando intervalos regulares para completar el espacio
-        while ( diff > 0 ) {
-            if ( diff > this.timeFraction )
-                time = this.timeFraction;
-            else
-                time = diff;
+        while ( init.getHours() < Hour.HOURS && init.compareTo( end ) < 0 ) {
+            current.addMins( this.timeFraction );
 
-            diff -= this.timeFraction;
+            if ( current.isAfter( end ) )
+                current = new Hour( end );
 
-            this.jPTasks.add( new TaskPanel( time, this.hoursSize,
+            this.jPTasks.add( new TaskPanel( this, init,
+                                             current,
+                                             this.hoursSize,
                                              this.timeFraction,
                                              this.direction ) );
+
+            init.addMins( this.timeFraction );
+
         }
+
     }
 
     public static void main( String[] args ) {
+        try {
+            javax.swing.UIManager.setLookAndFeel( javax.swing.UIManager.
+                    getSystemLookAndFeelClassName() );
+        } catch ( Exception e ) {
+        }
         javax.swing.JFrame frame = new javax.swing.JFrame();
 
         DailySchedule instance = new DailySchedule();
 
+        instance.createTask( new Hour(), new Hour( 1 ), "First" );
         instance.createTask( new Hour( 15 ), new Hour( 16 ), "Prueba1" );
         instance.createTask( new Hour( 15, 30 ), new Hour( 17 ), "Prueba2" );
         instance.createTask( new Hour( 16 ), new Hour( 17 ), "Prueba3" );
