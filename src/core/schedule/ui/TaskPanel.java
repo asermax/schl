@@ -5,6 +5,7 @@
 package core.schedule.ui;
 
 import core.schedule.task.Task;
+import core.utils.Hour;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GradientPaint;
@@ -35,46 +36,13 @@ public class TaskPanel extends javax.swing.JPanel implements ActionListener {
     /** Creates new form TaskPanel */
     public TaskPanel( ScheduleUI ui, Task task, int hoursSize,
                       int timeFraction, Color color, int direction ) {
-        if ( direction != SwingConstants.HORIZONTAL
-             && direction != SwingConstants.VERTICAL )
-            throw new IllegalArgumentException(
-                    "Solo se puede especificar HORIZONTAL o VERTICAL"
-                    + " como dirección." );
-
-        initComponents();
-        this.scheduleUI = ui;
-        this.task = task;
-        this.baseColor = color;
+        this.initCommon( ui, task, hoursSize, timeFraction, color, direction );
 
         //seteamos el popup
         this.setComponentPopupMenu( jPMTask );
 
-        //calculamos el size
-        int size = Math.round(
-                (float)task.getDurationInMinutes() * hoursSize / timeFraction );
-
-        //según la dirección, creamos un borde y una diimensión diferente
-        Dimension dim;
-        Border border;
-
-        if ( direction == SwingConstants.HORIZONTAL ) {
-            dim = new Dimension( size, this.getPreferredSize().height );
-            border = BorderFactory.createMatteBorder( 0, 0, 0, 1, Color.black );
-        } else {
-            dim = new Dimension( this.getPreferredSize().width, size );
-            border = BorderFactory.createMatteBorder( 0, 0, 1, 0, Color.black );
-        }
-
-        //seteamos la diimensión y el borde
-        this.setPreferredSize( dim );
-        this.setBorder( border );
-
         //seteamos la descripción de la task y cambiamos el color del mismo
         this.jLDescription.setText( task.getDescription() );
-        this.jLDescription.setForeground(
-                ( color.getRGB() < Color.black.getRGB() / 2 )
-                ? Color.white
-                : Color.gray );
 
         //asignamos en el tooltip los horarios reales
         this.setToolTipText( String.format( "Desde las %s hasta las %s",
@@ -92,33 +60,15 @@ public class TaskPanel extends javax.swing.JPanel implements ActionListener {
         this( ui, task, hoursSize, timeFraction, DEFAULT_COLOR );
     }
 
-    public TaskPanel( int time, int hoursSize, int timeFraction, int direction ) {
-        if ( direction != SwingConstants.HORIZONTAL
-             && direction != SwingConstants.VERTICAL )
-            throw new IllegalArgumentException(
-                    "Solo se puede especificar HORIZONTAL o VERTICAL"
-                    + " como dirección." );
-
-        initComponents();
-
-        Dimension dim;
-        Border border;
-        int size = Math.round( (float)time * hoursSize / timeFraction );
-
-        if ( direction == SwingConstants.HORIZONTAL ) {
-            dim = new Dimension( size, this.getPreferredSize().height );
-            border = BorderFactory.createMatteBorder( 0, 0, 0, 1, Color.black );
-        } else {
-            dim = new Dimension( this.getPreferredSize().width, size );
-            border = BorderFactory.createMatteBorder( 0, 0, 1, 0, Color.black );
-        }
-
-        this.setPreferredSize( dim );
-        this.setBorder( border );
+    public TaskPanel( ScheduleUI ui, Hour init, Hour end, int hoursSize,
+                      int timeFraction, int direction ) {
+        this.initCommon( ui, new Task( init, end, "" ), hoursSize, timeFraction,
+                         null, direction );
     }
 
-    public TaskPanel( int time, int hoursSize, int timeFraction ) {
-        this( time, hoursSize, timeFraction, SwingConstants.VERTICAL );
+    public TaskPanel( ScheduleUI ui, Hour init, Hour end, int hoursSize,
+                      int timeFraction ) {
+        this( ui, init, end, hoursSize, timeFraction, SwingConstants.VERTICAL );
     }
 
     /** This method is called from within the constructor to
@@ -144,6 +94,7 @@ public class TaskPanel extends javax.swing.JPanel implements ActionListener {
         setLayout(new java.awt.BorderLayout());
 
         jLDescription.setUI( MultiLineShadowUI.labelUI );
+        jLDescription.setForeground(java.awt.Color.white);
         jLDescription.setHorizontalTextAlignment(MultiLineLabel.CENTER);
         jLDescription.setName("jLDescription"); // NOI18N
         jLDescription.setVerticalTextAlignment(MultiLineLabel.CENTER);
@@ -174,16 +125,50 @@ public class TaskPanel extends javax.swing.JPanel implements ActionListener {
     private javax.swing.JPopupMenu jPMTask;
     // End of variables declaration//GEN-END:variables
 
+    private void initCommon( ScheduleUI ui, Task task, int hoursSize,
+                             int timeFraction, Color color, int direction ) {
+        if ( direction != SwingConstants.HORIZONTAL
+             && direction != SwingConstants.VERTICAL )
+            throw new IllegalArgumentException(
+                    "Solo se puede especificar HORIZONTAL o VERTICAL"
+                    + " como dirección." );
+
+        initComponents();
+        this.scheduleUI = ui;
+        this.task = task;
+        this.baseColor = color;
+
+        //calculamos el size
+        int size = Math.round(
+                (float)task.getDurationInMinutes() * hoursSize / timeFraction );
+
+        //según la dirección, creamos un borde y una diimensión diferente
+        Dimension dim;
+        Border border;
+
+        if ( direction == SwingConstants.HORIZONTAL ) {
+            dim = new Dimension( size, this.getPreferredSize().height );
+            border = BorderFactory.createMatteBorder( 0, 0, 0, 1, Color.black );
+        } else {
+            dim = new Dimension( this.getPreferredSize().width, size );
+            border = BorderFactory.createMatteBorder( 0, 0, 1, 0, Color.black );
+        }
+
+        //seteamos la diimensión y el borde
+        this.setPreferredSize( dim );
+        this.setBorder( border );
+    }
+
     @Override
     protected void paintComponent( Graphics g ) {
         super.paintComponent( g );
 
         //si no hay task, no ponemos ningún color
-        if ( this.task == null )
+        if ( this.baseColor == null )
             return;
 
         //casteamos el graphics
-        Graphics2D g2 = (Graphics2D)g;
+        Graphics2D g2 = (Graphics2D)g.create();
 
         //generamos el gradiente y lo asignamos        
         Color firstColor = this.baseColor.brighter();
@@ -201,12 +186,12 @@ public class TaskPanel extends javax.swing.JPanel implements ActionListener {
         //dibujamos un borde del color base
         g2.setPaint( this.baseColor );
 
-        g2.drawLine( 0, 0, 0, this.getHeight() - 1 );
-        g2.drawLine( 0, 0, this.getWidth() - 1, 0 );
-        g2.drawLine( 0, this.getHeight() - 1, this.getWidth() - 1,
-                     this.getHeight() - 1 );
+        g2.drawLine( 0, 0, 0, this.getHeight() );
+        g2.drawLine( 0, 0, this.getWidth(), 0 );
+        g2.drawLine( 0, this.getHeight() - 2, this.getWidth(),
+                     this.getHeight() - 2 );
         g2.drawLine( this.getWidth() - 1, 0, this.getWidth() - 1,
-                     this.getHeight() - 1 );
+                     this.getHeight() );
     }
 
 }
