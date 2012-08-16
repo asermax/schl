@@ -41,7 +41,7 @@ public class Task implements Comparable<Task> {
      * @return horario de inicio de la tarea.
      */
     public Hour getInitHour() {
-        return initHour;
+        return new Hour( initHour );
     }
 
     /**
@@ -49,7 +49,7 @@ public class Task implements Comparable<Task> {
      * @return horario de fin de la tarea.
      */
     public Hour getEndHour() {
-        return endHour;
+        return new Hour( endHour );
     }
 
     /**
@@ -65,8 +65,7 @@ public class Task implements Comparable<Task> {
      * @return duración de la tarea en minutos.
      */
     public int getDurationInMinutes() {
-        return this.endHour.getHourInMinutes() - this.initHour.
-                getHourInMinutes();
+        return this.endHour.toMinutes() - this.initHour.toMinutes();
     }
 
     /**
@@ -116,9 +115,9 @@ public class Task implements Comparable<Task> {
     public boolean isAfter( Hour hour ) {
         return this.initHour.isAfter( hour );
     }
-    
+
     public void delete() {
-        EventDispatcher.getInstance().fireTaskEvent( 
+        EventDispatcher.getInstance().fireTaskEvent(
                 new TaskDeleteEvent( this, "Eliminando Task" ) );
     }
 
