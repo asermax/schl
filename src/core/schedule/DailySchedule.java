@@ -90,9 +90,10 @@ public class DailySchedule extends Schedule {
                 //final, o si incluye el horario final
                 if ( t.isTranscurringAt( end ) || t.isBefore( end ) )
                     res = false;
-            } //si llegamos a esta instancia, la tarea transcurre ANTES del 
-            //horario inicial, por lo tanto no tiene sentido seguir analizando
-            else
+            } 
+            //si comprobamos que la tarea ocurre luego de terminar el periodo 
+            //no es necesario segir analizando
+            else if ( t.isAfter( end ) )
                 break;
 
             //finalmente, salimos del ciclo si ya comprobamos que el periodo
