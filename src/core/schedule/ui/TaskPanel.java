@@ -13,7 +13,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
@@ -43,7 +42,7 @@ public class TaskPanel extends javax.swing.JPanel {
         this.jLDescription.setText( task.getDescription() );
 
         //asignamos en el tooltip los horarios reales
-        this.setToolTipText( String.format( "Desde las %s hasta las %s",
+        this.setToolTipText( String.format( "From %s to %s",
                                             task.getInitHour(),
                                             task.getEndHour() ) );
     }
@@ -89,7 +88,7 @@ public class TaskPanel extends javax.swing.JPanel {
 
         jPMRealTask.setName("jPMRealTask"); // NOI18N
 
-        jMIEliminar.setText("Eliminar");
+        jMIEliminar.setText("Delete task");
         jMIEliminar.setName("jMIEliminar"); // NOI18N
         jMIEliminar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -100,7 +99,7 @@ public class TaskPanel extends javax.swing.JPanel {
 
         jPMDummyTask.setName("jPMDummyTask"); // NOI18N
 
-        jMIAgregar.setText("jMenuItem1");
+        jMIAgregar.setText("Create new task");
         jMIAgregar.setName("jMIAgregar"); // NOI18N
         jMIAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -121,8 +120,8 @@ public class TaskPanel extends javax.swing.JPanel {
 
     private void jMIEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMIEliminarActionPerformed
         if ( JOptionPane.showConfirmDialog( (JComponent)scheduleUI,
-                "¿Desea eliminar la Task?",
-                "Eliminar Task",
+                "Are you sure you want to delete the task?",
+                "Delete task",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE )
                 == JOptionPane.YES_OPTION )
@@ -137,6 +136,11 @@ public class TaskPanel extends javax.swing.JPanel {
         
         dialog.setLocationRelativeTo( parent );
         dialog.setVisible( true );
+        
+        Task newTask = dialog.getTask();
+        
+        if ( newTask != null )
+            this.scheduleUI.addTask( newTask );
     }//GEN-LAST:event_jMIAgregarActionPerformed
 
     private void initCommon( ScheduleUI ui, Task task, int hoursSize,
@@ -144,8 +148,7 @@ public class TaskPanel extends javax.swing.JPanel {
         if ( direction != SwingConstants.HORIZONTAL
              && direction != SwingConstants.VERTICAL )
             throw new IllegalArgumentException(
-                    "Solo se puede especificar HORIZONTAL o VERTICAL"
-                    + " como dirección." );
+                    "HORIZONTAL o VERTICAL are the only direction valid values" );
 
         initComponents();
         this.scheduleUI = ui;
