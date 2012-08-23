@@ -1,5 +1,8 @@
 package core.utils;
 
+import java.util.Calendar;
+import java.util.Date;
+
 /**
  * La clase {@code Hour} representa un momento del día, especificado a partir
  * de la hora del día y la cantidad de minutos.
@@ -12,7 +15,6 @@ public final class Hour implements Comparable<Hour> {
     public static final int HOURS = 24;
     /** Cantidad de minutos en una hora. */
     public static final int MINS = 60;
-
     /** Hora definida para este horario. */
     private int hours;
     /** Cantidad de minutos pasada la hora, definido para este horario. */
@@ -161,6 +163,20 @@ public final class Hour implements Comparable<Hour> {
     public boolean isBefore( Hour hour ) {
         return this.compareTo( hour ) <= 0;
     }
+    
+    /**
+     * Devuelve un objeto de la clase {code Date}, con la fecha actual, pero
+     * con las horas y minutos establecidos por este horario.
+     * @return objeto {@code Date} del día actual, con la hora representada
+     * por este objeto.
+     */
+    public Date toDate() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set( Calendar.HOUR, this.hours );
+        calendar.set( Calendar.MINUTE, this.minutes );
+
+        return calendar.getTime();
+    }
 
     /**
      * {@inheritDoc} 
@@ -183,12 +199,18 @@ public final class Hour implements Comparable<Hour> {
     public String toString() {
         return String.format( "%02d:%02d", this.hours, this.minutes );
     }
-    
-    public static Hour parseHour( String hour ) {
-        String parts[] = hour.split( ":", 2 );
-        
-        return new Hour( Integer.parseInt( parts[0]), 
-                Integer.parseInt( parts[1]) );
+
+    /**
+     * Permite obtener la hora de un objeto {@code Date}.
+     * @param date fecha de la cual obtener la hora.
+     * @return objeto {@code Hour} con la hora obtenida de la fecha.
+     */
+    public static Hour fromDate( Date date ) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime( date );
+
+        return new Hour( calendar.get( Calendar.HOUR ), calendar.get( 
+                Calendar.MINUTE ) );
     }
 
 }
