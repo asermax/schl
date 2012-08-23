@@ -31,8 +31,8 @@ public class Task implements Comparable<Task> {
             throw new IllegalArgumentException(
                     "La hora inicial debe ser menor de la hora final." );
         
-        this.initHour = initHour;
-        this.endHour = endHour;
+        this.initHour = new Hour( initHour );
+        this.endHour = new Hour( endHour );
         this.description = description;
     }
 
