@@ -12,6 +12,7 @@ public final class Hour implements Comparable<Hour> {
     public static final int HOURS = 24;
     /** Cantidad de minutos en una hora. */
     public static final int MINS = 60;
+
     /** Hora definida para este horario. */
     private int hours;
     /** Cantidad de minutos pasada la hora, definido para este horario. */
@@ -181,6 +182,13 @@ public final class Hour implements Comparable<Hour> {
     @Override
     public String toString() {
         return String.format( "%02d:%02d", this.hours, this.minutes );
+    }
+    
+    public static Hour parseHour( String hour ) {
+        String parts[] = hour.split( ":", 2 );
+        
+        return new Hour( Integer.parseInt( parts[0]), 
+                Integer.parseInt( parts[1]) );
     }
 
 }
