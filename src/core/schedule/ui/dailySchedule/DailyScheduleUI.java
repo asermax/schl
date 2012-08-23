@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.swing.BoxLayout;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
@@ -152,7 +153,7 @@ public class DailyScheduleUI extends JPanel implements ScheduleUI {
                                              this.timeFraction,
                                              this.direction ) );
 
-            init.addMins( this.timeFraction );          
+            init.addMins( this.timeFraction );
         }
 
     }
@@ -191,22 +192,26 @@ public class DailyScheduleUI extends JPanel implements ScheduleUI {
         this.initTasksPanel();
         this.revalidate();
     }
-    
+
     @Override
     public void removeTask( Task task ) {
         this.schedule.removeTask( task );
         this.colors.remove( task );
         this.recreateTaskPanel();
     }
-    
+
     @Override
     public void addTask( Task task ) {
-        if ( this.schedule.addTask( task ) ) {                       
-            this.colors.put( task, 
-                    new java.awt.Color( (new Random()).nextInt() ) );
+        if ( this.schedule.addTask( task ) ) {
+            this.colors.put( task,
+                             new java.awt.Color( ( new Random() ).nextInt() ) );
             this.recreateTaskPanel();
         } else
-            ;
+            JOptionPane.showMessageDialog( this,
+                                           "There is already a task in the"
+                                           + " given period!",
+                                           "Couldn't add new task",
+                                           JOptionPane.ERROR_MESSAGE );
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
