@@ -11,13 +11,14 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import javax.swing.BoxLayout;
+import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 /**
  *
  * @author kiira
  */
-public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
+public class DailyScheduleUI extends JPanel implements ScheduleUI {
 
     private int hoursSize;
     private int timeFraction;
@@ -136,7 +137,6 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
                                              this.direction ) );
 
             init.addMins( irregular );
-
         }
 
         //continuamos agregando intervalos regulares para completar el espacio
@@ -152,8 +152,7 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
                                              this.timeFraction,
                                              this.direction ) );
 
-            init.addMins( this.timeFraction );
-
+            init.addMins( this.timeFraction );          
         }
 
     }
@@ -187,13 +186,27 @@ public class DailyScheduleUI extends javax.swing.JPanel implements ScheduleUI {
         frame.setVisible( true );
     }
 
+    private void recreateTaskPanel() {
+        this.jPTasks.removeAll();
+        this.initTasksPanel();
+        this.revalidate();
+    }
+    
     @Override
     public void removeTask( Task task ) {
         this.schedule.removeTask( task );
         this.colors.remove( task );
-        this.jPTasks.removeAll();
-        this.initTasksPanel();
-        this.revalidate();
+        this.recreateTaskPanel();
+    }
+    
+    @Override
+    public void addTask( Task task ) {
+        if ( this.schedule.addTask( task ) ) {                       
+            this.colors.put( task, 
+                    new java.awt.Color( (new Random()).nextInt() ) );
+            this.recreateTaskPanel();
+        } else
+            ;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

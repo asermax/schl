@@ -10,5 +10,6 @@ import core.schedule.task.Task;
 public interface ScheduleUI {
 
     public void removeTask( Task task );
+    public void addTask( Task task );
 
 }
